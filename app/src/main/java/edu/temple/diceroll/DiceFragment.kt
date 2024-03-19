@@ -11,6 +11,10 @@ import kotlin.random.Random
 
 const val DIE_SIDES = "dIcE_SiDeS"
 
+private val CURRENT_ROLL_KEY = "currentRoll"
+
+private var currentRoll = 0
+
 class DiceFragment : Fragment() {
     private var sides: Int? = null
 
@@ -29,9 +33,22 @@ class DiceFragment : Fragment() {
 
             val numberDisplayTextView = findViewById<TextView>(R.id.numberDisplay)
             findViewById<Button>(R.id.rollButton).setOnClickListener {
-                numberDisplayTextView.text = (Random.nextInt(sides!!) + 1).toString()
+                currentRoll = (Random.nextInt(sides!!) + 1)
+                numberDisplayTextView.text = currentRoll.toString()
             }
         }
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        savedInstanceState?.run{
+            currentRoll = getInt(CURRENT_ROLL_KEY, 0)
+        }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putInt(CURRENT_ROLL_KEY, currentRoll)
     }
 
     companion object {
